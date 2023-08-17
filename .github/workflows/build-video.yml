@@ -1,0 +1,56 @@
+name: Build Video
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          path: source
+
+      - name: Checkout mupipy repo
+        uses: actions/checkout@v3
+        with:
+          repository: 'ruifpcoelho/yaml2video'
+          #token: ${{ secrets.GH_PAT }}
+          path: yaml2video
+          ref: master
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.8'
+
+      - name: Install dependencies
+        run: |
+          cd yaml2video
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Build
+        working-directory: ./yaml2video
+        run: |
+          python main.py -c ../source
+
+      # use either "Update repo" or "Upload Artifact"
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: videos
+          path: 'source/**/*.mp4'
+          retention-days: 5
+
+      - name: Update repo
+        run: |
+          cd source
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add .
+          git commit -m "Adding video from GitHub Actions"
+          git push

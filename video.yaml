@@ -1,0 +1,14 @@
+fps: 25
+film:
+  - type: layers
+    layers:
+      - image_path: images/python.png
+        width: 300
+        scenes:
+          - duration: 2000
+            end_y: 200
+      - image_path: images/yaml.png
+        width: 300
+        scenes:
+          - duration: 2000
+            end_y: 1200
